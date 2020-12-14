@@ -1,0 +1,114 @@
+.main {
+    width: 500px;
+    box-sizing: border-box;
+    box-shadow: 0 0 2px 0 rgba($color: #000000, $alpha: 0.25);
+    margin-bottom: 20px;
+    padding: 15px;
+    box-sizing: border-box;
+    background: #fafafa;
+    box-shadow: 18px 18px 36px #d5d5d5,
+        -18px -18px 36px #ffffff;
+
+    &-body {
+        width: 100%;
+
+        &-head {
+            height: 60px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            align-content: center;
+        }
+
+        &-content {
+            font-size: 12px;
+
+            ul {
+                list-style-image: url("~@/assets/img/icons/li.png");
+            }
+
+            img {
+                margin-bottom: 5px;
+                margin-right: 5px;
+            }
+
+            p {
+                margin: 2px;
+            } 
+        }
+
+        &-footer {
+            font-size: 12px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: #8a8a8a;
+
+            a {
+                height: 20px;
+                line-height: 20px;
+                width: 150px;
+                float: right;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            img {
+                width: 20px;
+                margin-right: 5px;
+                float: left;
+                opacity: 0.3;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    &-icon {
+        img {
+            border: 5px solid white;
+            box-shadow: 3px 3px 7px #d5d5d5,
+                -3px -3px 7px #ffffff;
+            width: 35px;
+        }
+    }
+
+    &-header {
+        width: 80%;
+        height: 100%;
+        font-size: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        &--large {
+            width: 100%;
+        }
+
+        h5 {
+            margin: 0;
+            border-bottom: 1px dashed #cacaca;
+            margin-bottom: 5px;
+            color: #2f7e8a;
+            text-shadow: 0 0 3px rgba($color:#2f7e8a, $alpha: 0.5);
+            padding-bottom: 5px;
+            font-size: 14px;
+
+            img {
+                margin-right: 5px;
+            }
+        }
+
+        p {
+            margin: 0;
+            font-size: 11px;
+            color: #8a8a8a;
+        }
+    }
+}
