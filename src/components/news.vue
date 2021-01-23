@@ -34,10 +34,20 @@ export default {
 <style lang="scss">
 .news {
   &-title {
-    margin: 5px;
+    margin: 10px;
+    color: rgb(114, 114, 114);
+    
     label {
       font-weight: bold;
-      font-size: 14px;
+      font-size: 12px;
+    }
+    input {
+      margin: 5px;
+      padding: 2px;
+      border:none;
+      border-radius: 10px;
+      background-color: rgb(236, 235, 235);
+      color: rgb(107, 106, 106);
     }
   }
 }

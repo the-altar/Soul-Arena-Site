@@ -1,10 +1,13 @@
 <template>
   <div>
-    <news />
+    <news/>
     <div v-if="isVisible" class="main">
       <div class="news-title">
         <label>Tittle: </label>
         <input v-model="title" type="text" />
+        <br>
+        <label>News banner: </label>
+        <input v-model="bannerUrl" type="text" />
       </div>
       <TextEditor @content-captured="saveContent" :content="''" />
     </div>
@@ -21,6 +24,7 @@ export default {
   data() {
     return {
       title: "",
+      bannerUrl:null
     };
   },
   components,

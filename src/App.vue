@@ -1,131 +1,84 @@
 <template>
   <main id="app">
-    <aside class="aside aside--top aside--smaller">
-      <button class="btn reef" @click="openGame">Start Game</button>
+    <topNav />
+    <div id="app-view">
+      <aside class="aside aside--top aside--sticky">
+        <div class="nav">
+          <button class="btn" @click="openGame">
+            <p class="btn-inner">
+              <img src="~@/assets/img/icons/game.svg" alt="Start Game" />
+              play
+            </p>
+          </button>
 
-      <button class="btn reef" @click="$router.push('/')">Homepage</button>
+          <button class="btn" @click="$router.push('/')">
+            <p class="btn-inner">
+              <img src="~@/assets/img/icons/homepage.svg" alt="Homepage" />
+              home
+            </p>
+          </button>
 
-      <button
-        v-if="isMember"
-        @click="$router.push(`/user/${auth.username}`)"
-        class="btn reef"
-      >
-        My Account
-      </button>
+          <button
+            v-if="isMember"
+            @click="$router.push(`/user/${auth.username}`)"
+            class="btn"
+          >
+            <p class="btn-inner">
+              <img src="~@/assets/img/icons/user.svg" alt="Login" />
+              Profile
+            </p>
+          </button>
+          <button
+            v-if="!isMember"
+            @click="$router.push('/register')"
+            class="btn"
+          >
+            <p class="btn-inner">
+              <img src="~@/assets/img/icons/user.svg" alt="Login" />
+              register
+            </p>
+          </button>
+          <button v-if="!isMember" @click="$router.push('/login')" class="btn">
+            <p class="btn-inner">
+              <img src="~@/assets/img/icons/user.svg" alt="Login" />
+              login
+            </p>
+          </button>
 
-      <button
-        v-if="!isMember"
-        @click="$router.push('/register')"
-        class="btn reef"
-      >
-        Register
-      </button>
+          <button class="btn" @click="$router.push({ name: 'game-manual' })">
+            <p class="btn-inner">
+              <img src="~@/assets/img/icons/manual.svg" alt="Manual" />
+              manual
+            </p>
+          </button>
+        </div>
+      </aside>
 
-      <button v-if="!isMember" @click="$router.push('/login')" class="btn reef">
-        Login
-      </button>
+      <div class="container">
+        <banner></banner>
+        <router-view></router-view>
+      </div>
 
-      <button class="btn reef">Characters</button>
-
-      <button v-if="isMember" @click="logout()" class="btn reef">Logout</button>
-    </aside>
-
-    <div class="container">
-      <banner></banner>
-      <router-view> </router-view>
+      <nav-right></nav-right>
     </div>
-
-    <aside class="aside aside--top">
-      <div class="aside-box">
-        <div class="aside-box-head">
-          <p>
-            <img
-              height="10px"
-              src="~@/assets/img/icons/right-arrow-white.svg"
-            />
-            Points ladder
-          </p>
-        </div>
-        <div class="aside-box-body">
-          <li>
-            <img src="~@/assets/img/icons/star.svg" />
-            <img src="https://placewaifu.com/image/75/75" />
-            <p>Blackspot</p>
-          </li>
-          <li>
-            <img src="~@/assets/img/icons/insignia.svg" />
-            <img src="https://placewaifu.com/image/75/75" />
-            <p>Kostas</p>
-          </li>
-          <li>
-            <img src="~@/assets/img/icons/insignia-1.svg" />
-            <img src="https://placewaifu.com/image/75/75" />
-            <p>Sparks Marshall</p>
-          </li>
-        </div>
-      </div>
-      <div class="aside-box">
-        <div class="aside-box-head">
-          <p>
-            <img
-              height="10px"
-              src="~@/assets/img/icons/right-arrow-white.svg"
-            />
-            Streak ladder
-          </p>
-        </div>
-        <div class="aside-box-body">
-          <li>
-            <img src="~@/assets/img/icons/star.svg" />
-            <img src="https://placewaifu.com/image/75/75" />
-            <p>Blackspot</p>
-          </li>
-          <li>
-            <img src="~@/assets/img/icons/insignia.svg" />
-            <img src="https://placewaifu.com/image/75/75" />
-            <p>Kostas</p>
-          </li>
-          <li>
-            <img src="~@/assets/img/icons/insignia-1.svg" />
-            <img src="https://placewaifu.com/image/75/75" />
-            <p>Sparks Marshall</p>
-          </li>
-        </div>
-      </div>
-      <div class="aside-box">
-        <div class="aside-box-head">
-          <p>
-            <img
-              height="10px"
-              src="~@/assets/img/icons/right-arrow-white.svg"
-            />
-            Latest poll
-          </p>
-        </div>
-        <div class="aside-box-body"></div>
-      </div>
-    </aside>
   </main>
 </template>
 
 <script>
 import banner from "@/components/banner.vue";
+import topNav from "@/components/nav.top.vue";
+import navRight from "@/components/nav.right.vue";
 export default {
-  components: { banner },
+  components: { banner, topNav, navRight },
   methods: {
     openGame() {
       const y = window.top.outerHeight / 2 + window.top.screenY - 550 / 2;
       const x = window.top.outerWidth / 2 + window.top.screenX - 800 / 2;
       window.open(
-        "/game",
+        "https://game.soul-arena.app/",
         "mywin",
         `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${775}, height=${550}, top=${y}, left=${x}`
       );
-    },
-    async logout() {
-      this.$http.post("/user/logout");
-      this.$router.push("/");
-      this.$store.commit("user/setPermissions", { authLevel: -1 });
     },
   },
   computed: {
@@ -137,12 +90,16 @@ export default {
     },
   },
   async created() {
-    try {
-      const res = await this.$http.get("/user");
-      this.$store.commit("user/setPermissions", res.data);
-    } catch (err) {
-      alert(err);
-    }
+    const res = await this.$http.get("/user");
+    this.$store.commit("user/setPermissions", res.data);
+    this.$colyseus
+      .joinOrCreate("lobby", res.data)
+      .then((room) => {
+        this.$store.commit("lobby/SET_ROOM", room);
+      })
+      .catch(() => {
+        this.$store.commit("lobby/SET_ROOM", null);
+      });
   },
 };
 </script>

@@ -6,12 +6,12 @@ export default {
         id:null
     },
     getters: {
-        userData: function (state) {
-            return state.user
+        id: function(state){
+            return state.id
         },
         permissions: function (state) {
             return { ...state }
-        }
+        },
     },
     mutations: {
         setPermissions: function (state, payload) {

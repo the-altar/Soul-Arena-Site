@@ -5,8 +5,10 @@
     </div>
 
     <Comment
-      v-for="(comment, key) in this.comments"
+      :id="`comment-${comment.id}`"
+      v-for="(comment, key) in $store.getters['GET_COMMENTS']"
       :comment="comment"
+      :index="key"
       :key="key"
     />
 
@@ -29,6 +31,7 @@ export default {
       thread: {},
       loaded: false,
       reply: false,
+      threadId: null,
     };
   },
   components,
@@ -36,16 +39,17 @@ export default {
   methods,
   watchers,
   async created() {
+    this.$store.commit("RESET_COMMENT_SECTION")
     const id = this.$route.params.id;
+    this.threadId = id;
     const siteArea = 0;
 
     try {
       const doc = await this.$http.get(`/thread/${id}/${siteArea}`);
-      const comments = await this.$http.get(`/thread/${id}/comments/50`);
+      const comments = await this.$http.get(`/thread/${id}/comments/0`);
 
       this.thread = { ...doc.data };
-      this.comments = { ...comments.data };
-
+      this.$store.commit("SET_COMMENTS", comments.data);
       this.loaded = true;
     } catch (err) {
       alert(err);

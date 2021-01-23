@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div class="quotes">
+      <div
+        @click="scrollToPost(quote.quoteId)"
+        class="quotes-item"
+        v-for="quote of quotes"
+        :key="quote.quoteId"
+        v-html="quote.body.content"
+      ></div>
+    </div>
+
     <div class="editor">
       <editor-content
         :editor="editor"
@@ -74,17 +84,26 @@
         >
           Img
         </button>
+
+        <button
+          class="menubar__button"
+          @click="showLinkPrompt(commands.link)"
+        >
+          link
+        </button>
       </div>
     </editor-menu-bar>
 
     <button class="input input-btn" @click="getContent()">Save</button>
-    <button class="input input-btn firewatch" @click="cancel()">Cancel</button>
+    <button class="input input-btn firewatch" @click="cancel()" id="me">
+      Cancel
+    </button>
   </div>
 </template>
 
 <script>
 // Import the editor
-import { Editor, EditorContent, EditorMenuBar, Extension } from "tiptap";
+import { Editor, EditorContent, EditorMenuBar } from "tiptap";
 import {
   Blockquote,
   CodeBlock,
@@ -140,23 +159,9 @@ export default {
             showOnlyWhenEditable: true,
             showOnlyCurrent: true,
           }),
-          new (class extends Extension {
-            keys() {
-              return {
-                Enter(state, dispatch, view) {
-                  const { schema, tr } = view.state;
-
-                  const hard_break = schema.nodes.hard_break;
-                  const transaction = tr
-                    .replaceSelectionWith(hard_break.create())
-                    .scrollIntoView();
-                  view.dispatch(transaction);
-                  return true;
-                },
-              };
-            }
-          })(),
         ],
+        linkUrl: null,
+        linkMenuIsActive: false,
       }),
     };
   },
@@ -166,6 +171,9 @@ export default {
     },
     isEdit() {
       return this.editMode;
+    },
+    quotes() {
+      return this.$store.getters["GET_QUOTES"];
     },
   },
   methods: {
@@ -181,13 +189,26 @@ export default {
     cancel() {
       this.$emit("close-editor");
     },
+    scrollToPost(id) {
+      this.$scrollTo(`#comment-${id}`, 0, {
+        offset: -60,
+        force: true,
+        cancelable: true,
+      });
+    },
+    showLinkPrompt(command) {
+      const linkUrl = prompt("Enter the URL of your link");
+      if (linkUrl) {
+        command({ href: linkUrl });
+      }
+    },
   },
   beforeDestroy() {
     this.editor.destroy();
   },
-  created(){
+  created() {
     this.editor.setContent(this.body);
-  }
+  },
 };
 </script>
 
@@ -230,5 +251,55 @@ export default {
     background-color: cornsilk;
     margin: 0;
   }
+}
+
+.quotes {
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+  &-item {
+    width: 130px;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    background-color: rgb(230, 230, 230);
+    border: 1px solid rgb(196, 196, 196);
+    overflow: hidden;
+    padding: 4px 4px 4px 10px;
+    border-radius: 25px;
+    margin: 0 2px 5px 0;
+    position: relative;
+
+    &::after {
+      content: "";
+      width: 45px;
+      height: 100%;
+      display: inline-block;
+      background: linear-gradient(
+        to left,
+        rgba(230, 230, 230, 1),
+        rgba(0, 0, 0, 0)
+      );
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      right: 0;
+    }
+
+    &-label {
+      color: gray;
+      font-weight: bolder;
+    }
+    p {
+      margin: 0;
+      width: max-content;
+      color: gray;
+    }
+  }
+}
+
+.is-active {
+  background-color: rgb(194, 194, 194) !important;
 }
 </style>

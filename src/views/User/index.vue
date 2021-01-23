@@ -1,22 +1,13 @@
 <template>
   <div>
     <div class="main">
-      <div class="main-body-head">
-        <div class="main-header main-header--large">
-          <h5>My Account</h5>
-        </div>
-      </div>
       <div class="main-body-content">
-        <div v-if="user">
-          <img class="user-avatar" :src="`/img/avatars/${user.avatar}`" />
-          <p class="user-name">{{ user.username }}</p>
-          <p class="user-rank">{{ user.rank.rankName }}</p>
-          <div>
-            <button v-if="auth.id === user.id">change avatar</button>
-          </div>
-        </div>
-
-        <avatar-panel></avatar-panel>
+        <userface v-if="user" :user="user"></userface>
+        <user-options
+          @update="updateDynamicComponent"
+          :id="user.id"
+        ></user-options>
+        <component :is="dynamicComponent" :user="user"></component>
       </div>
       <div class="main-body-footer"></div>
     </div>
@@ -26,18 +17,22 @@
 <script>
 import components from "./script/components";
 import computed from "./script/computed";
-import methods from "./script/methods";
 import watchers from "./script/watchers";
 
 export default {
   data() {
     return {
       user: false,
+      dynamicComponent: "",
     };
   },
   components,
   computed,
-  methods,
+  methods: {
+    updateDynamicComponent(e) {
+      this.dynamicComponent = e;
+    },
+  },
   watchers,
   async created() {
     try {

@@ -11,19 +11,26 @@
           }}
         </h5>
         <p>
-          posted by: {{ news.author.username }}, on
+          posted by:
+          <router-link
+            :to="{ name: 'user', params: { username: news.author.username } }"
+            >{{ news.author.username }}</router-link
+          >, on
           {{
-            date(news.created_at)
-              | moment("dddd, MMMM Do YYYY, h:mm:ss a")
+            new Date(news.created_at) | moment("dddd, MMMM Do YYYY, h:mm:ss a")
           }}
         </p>
       </div>
     </div>
 
     <div v-if="readOnly" class="main-body-content" v-html="news.content"></div>
+    <div class="news-title" v-if="!readOnly">
+      <label>banner url: </label>
+      <input v-model="news.meta.bannerUrl" type="text" />
+    </div>
     <TextEditor
       @close-editor="readOnly = true"
-      v-else
+      v-if="!readOnly"
       :content="news.content"
       @content-captured="updatePost"
     />
@@ -35,7 +42,9 @@
         src="~@/assets/img/icons/edit.svg"
       />
       <a @click="seeNews(news.title, news.id)">
-        <img src="~@/assets/img/icons/comments.svg" /> leave a comment
+        <img src="~@/assets/img/icons/comments.svg" /> leave a comment ({{
+          news.post_count
+        }})
       </a>
     </div>
   </div>
@@ -55,16 +64,19 @@ export default {
     },
     async updatePost(e) {
       try {
-        const res = await this.$http.put("/thread", [this.news.id, e]);
+        const res = await this.$http.put("/thread", [
+          this.news.id,
+          e,
+          this.news.meta,
+        ]);
         this.news.content = res.data.content;
       } catch (err) {
         alert(err);
       }
     },
-    seeNews(title,id){
-      console.log(title, id)
-      this.$router.push(`/news/${id}/${title.trim().split(' ').join("-") }`)
-    }
+    seeNews(title, id) {
+      this.$router.push(`/news/${id}/${title.trim().split(" ").join("-")}`);
+    },
   },
   computed: {
     isAdmin() {

@@ -4,12 +4,12 @@
 
     <div class="gallery">
       <div
-        @click="selectedAvatar = v"
-        :class="{ 'gallery-active': selectedAvatar === v }"
+        @click="selectedAvatar = v - 1"
+        :class="{ 'gallery-active': selectedAvatar === v - 1 }"
         v-for="v in defaulted"
         :key="v"
       >
-        <img :src="`/img/avatars/${v}.jpg`" />
+        <img :src="`/img/avatars/${v - 1}.jpg`" />
       </div>
     </div>
 
@@ -30,7 +30,7 @@
 export default {
   data() {
     return {
-      defaulted: 18,
+      defaulted: 20,
       selectedAvatar: 1,
       file: null,
     };
@@ -39,23 +39,32 @@ export default {
     handleFilesUpload() {
       this.file = this.$refs.files.files[0];
     },
-    submitChanges() {
+    async submitChanges() {
       const id = this.$store.getters["user/permissions"].id;
+      const sizeLimit = 1.5 * 1024 * 1024;
+      try {
+        if (this.file !== null) {
+          if (parseInt(this.file.size) > sizeLimit) {
+            alert(`File size exceeds upload limit (1 MB)`);
+            return;
+          }
+          let formData = new FormData();
 
-      if (this.file !== null) {
-        let formData = new FormData();
+          formData.append("file", this.file);
 
-        formData.append("file", this.file);
-
-        this.$http.post(`/user/avatar/${id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-      } else {
-        const filename = this.selectedAvatar;
-        this.$http.post(`/user/avatar/${id}/${filename}`);
+          await this.$http.post(`/user/avatar/${id}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          alert("uploaded!");
+        } else {
+          const filename = this.selectedAvatar;
+          await this.$http.post(`/user/avatar/${id}/${filename}`);
+          alert("uploaded!");
+        }
+      } catch (e) {
+        alert("failed", e);
       }
     },
   },
