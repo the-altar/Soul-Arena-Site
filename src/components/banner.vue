@@ -26,7 +26,7 @@ export default {
   },
   async created() {
     try {
-      const res = await this.$http.get("/thread/news");
+      const res = await this.$http.get("/thread/news/heading");
       this.newsList = res.data;
     } catch (err) {
       alert(err);

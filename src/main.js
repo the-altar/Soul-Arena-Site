@@ -34,6 +34,20 @@ Vue.use(require("vue-scrollto"), {
 Vue.use(require("vue-moment"));
 Vue.config.productionTip = false;
 
+import VueGtag from "vue-gtag";
+
+Vue.use(
+  VueGtag,
+  {
+    config: {
+      id: "G-78KZXC2T3P",
+    },
+    appName: "Soul Arena",
+    pageTrackerScreenviewEnabled: true,
+  },
+  router
+);
+
 new Vue({
   router,
   store,

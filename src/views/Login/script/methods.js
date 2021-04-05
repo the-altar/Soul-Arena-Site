@@ -15,7 +15,8 @@ const login = async function() {
       });
     this.$router.push("/");
   } catch (err) {
-    alert(err);
+    this.loginRequest = false;
+    this.err = "Wrong username or password!";
   }
 };
 

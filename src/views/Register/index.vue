@@ -17,7 +17,7 @@
             <td colspan="100%">
               Your username cannot be changed after registration and can only
               contain letters, numbers, dots, underscores and dashes. At least 3
-              characters long
+              characters long with a maximum of 16 characters.
             </td>
           </tr>
           <tr class="form-data">
@@ -25,6 +25,7 @@
             <td colspan="70%">
               <input
                 v-model="username"
+                autocomplete="off"
                 class="form-input form-input--large"
                 type="text"
               />
@@ -46,7 +47,12 @@
           <tr class="form-data">
             <td class="form-label" colspan="30%">Password</td>
             <td colspan="70%">
-              <input v-model="password" class="form-input" type="password" />
+              <input
+                v-model="password"
+                autocomplete="off"
+                class="form-input"
+                type="password"
+              />
 
               <img
                 v-if="validPassword"
@@ -68,6 +74,7 @@
             <td class="form-label" colspan="30%">Confirm password</td>
             <td colspan="70%">
               <input
+                autocomplete="off"
                 v-model="confirmPassword"
                 class="form-input"
                 type="password"
@@ -93,6 +100,7 @@
             <td class="form-label" colspan="30%">E-mail</td>
             <td colspan="70%">
               <input
+                autocomplete="off"
                 v-model="email"
                 class="form-input form-input--large"
                 type="text"
@@ -107,32 +115,23 @@
             </td>
           </tr>
         </table>
-
-        <button v-if="!requestSent" class="form-btn">Register</button>
-        <div v-else>
-          <p>You'll be redirected soon!</p>
-          <div class="lds-roller">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
+        <p v-if="errMsg" class="form-err">
+          {{ errMsg }}
+        </p>
+        <button @click="register" class="form-btn">Register</button>
       </div>
-
+      <loading v-else class="main-body-content center"></loading>
       <div class="main-body-footer"></div>
     </div>
   </div>
 </template>
 
 <script>
-import components from "./script/components";
-
+import loading from "@/components/loading.vue";
 export default {
+  components: {
+    loading,
+  },
   data() {
     return {
       email: "",
@@ -146,14 +145,18 @@ export default {
   computed: {
     validUsername() {
       const r = /^([a-zA-Z0-9-_]{3,})$/.test(this.username);
-      return r;
+      return r && this.username.length <= 16;
     },
     validPassword() {
       if (this.password.length > 5) return true;
       return false;
     },
     confirmedPassword() {
-      if (this.password === this.confirmPassword) return true;
+      if (
+        this.password === this.confirmPassword &&
+        this.confirmPassword.length > 5
+      )
+        return true;
       return false;
     },
     validEmail() {
@@ -188,101 +191,23 @@ export default {
           .catch(() => {
             this.$store.commit("lobby/SET_ROOM", null);
           });
-      } catch (err) {
-        alert(err);
-        this.errMsg = "It seems something went wrong...";
+      } catch (e) {
+        this.reset();
       }
     },
+    reset() {
+      this.password = "";
+      this.username = "";
+      this.confirmPassword = "";
+      this.email = "";
+      this.requestSent = false;
+      this.errMsg =
+        "There's something wrong. Your username or email are likely already in use.";
+    },
   },
-  components,
 };
 </script>
 
 <style lang="scss" scoped>
 @import "./style";
-
-.lds-roller {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-roller div {
-  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  transform-origin: 40px 40px;
-}
-.lds-roller div:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #fff;
-  margin: -4px 0 0 -4px;
-}
-.lds-roller div:nth-child(1) {
-  animation-delay: -0.036s;
-}
-.lds-roller div:nth-child(1):after {
-  top: 63px;
-  left: 63px;
-}
-.lds-roller div:nth-child(2) {
-  animation-delay: -0.072s;
-}
-.lds-roller div:nth-child(2):after {
-  top: 68px;
-  left: 56px;
-}
-.lds-roller div:nth-child(3) {
-  animation-delay: -0.108s;
-}
-.lds-roller div:nth-child(3):after {
-  top: 71px;
-  left: 48px;
-}
-.lds-roller div:nth-child(4) {
-  animation-delay: -0.144s;
-}
-.lds-roller div:nth-child(4):after {
-  top: 72px;
-  left: 40px;
-}
-.lds-roller div:nth-child(5) {
-  animation-delay: -0.18s;
-}
-.lds-roller div:nth-child(5):after {
-  top: 71px;
-  left: 32px;
-}
-.lds-roller div:nth-child(6) {
-  animation-delay: -0.216s;
-}
-.lds-roller div:nth-child(6):after {
-  top: 68px;
-  left: 24px;
-}
-.lds-roller div:nth-child(7) {
-  animation-delay: -0.252s;
-}
-.lds-roller div:nth-child(7):after {
-  top: 63px;
-  left: 17px;
-}
-.lds-roller div:nth-child(8) {
-  animation-delay: -0.288s;
-}
-.lds-roller div:nth-child(8):after {
-  top: 56px;
-  left: 12px;
-}
-@keyframes lds-roller {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 </style>

@@ -48,4 +48,10 @@
     border-radius: 5px;
     border: none;
   }
+
+  &-err {
+    margin-top: 10px;
+    font-size: 11px;
+    color: firebrick;
+  }
 }
